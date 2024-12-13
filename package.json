@@ -2,6 +2,7 @@
   "name": "qr-checkin",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://javaadh.github.io/qr-checkin",
   "dependencies": {
     "cra-template": "1.2.0",
     "html5-qrcode": "^2.3.8",
@@ -38,7 +39,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.2.0",
-    "homepage": "https://javaadh.github.io/qr-checkin"
+    "gh-pages": "^6.2.0"
   }
 }
