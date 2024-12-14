@@ -14,6 +14,7 @@ const QrScanner = ({ onScanSuccess, onScanFailure }) => {
       videoElement.style.height = "auto";
       videoElement.style.objectFit = "cover";
 
+
     }
   }, []);
   
@@ -26,7 +27,7 @@ const QrScanner = ({ onScanSuccess, onScanFailure }) => {
           { facingMode: "environment" }, // Rear-facing camera
           {
             fps: 10,
-            qrbox: { width: 250, height: 250 }, // Match CSS width and height
+            qrbox: { width: 250, height: 350, }, // Match CSS width and height
             aspectRatio: 1, // Force square aspect ratio
           },
           (decodedText) => onScanSuccess(decodedText),

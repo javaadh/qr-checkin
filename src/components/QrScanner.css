@@ -2,17 +2,19 @@
 
 #qr-code-region {
     margin: auto;
-    width: 250px; /* Match qrbox width */
-    height: 250px; /* Match qrbox height */
+    width: 350px; /* Match qrbox width */
+    height: 350px; /* Match qrbox height */
     position: relative;
     border: 2px solid #000; /* Optional: for better visibility */
     overflow: hidden;
+    z-index: 1;
   }
   
   video {
     width: 100%;
     height: auto;
     object-fit: cover; /* Ensure the video fills the container */
+    z-index: -1111;
   }
   .scanning-line {
     position: absolute;
@@ -22,6 +24,7 @@
     height: 2px;
     background-color: red; /* Line color */
     animation: scanning 2s infinite linear;
+    z-index: 9999;
   }
   
   @keyframes scanning {
