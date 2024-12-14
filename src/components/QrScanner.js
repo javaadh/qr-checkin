@@ -1,60 +1,77 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import "./QrScanner.css"; // Import your custom CSS for the scanning line
+import "./QrScanner.css";
 
 const QrScanner = ({ onScanSuccess, onScanFailure }) => {
-  const qrCodeRegionRef = useRef(null);
   const html5QrCodeRef = useRef(null);
-  const [isScanning, setIsScanning] = useState(false);
+  const lastScannedRef = useRef(null); // Tracks the last scanned QR code
+  const isScannerRunning = useRef(false); // Tracks scanner state
 
   useEffect(() => {
-    const videoElement = document.querySelector("#qr-code-region video");
-    if (videoElement) {
-      videoElement.style.width = "100%";
-      videoElement.style.height = "auto";
-      videoElement.style.objectFit = "cover";
-
-
-    }
-  }, []);
-  
-  useEffect(() => {
-    html5QrCodeRef.current = new Html5Qrcode("qr-code-region");
-
-    const startScanner = async () => {
+    const initializeScanner = async () => {
       try {
-        await html5QrCodeRef.current.start(
-          { facingMode: "environment" }, // Rear-facing camera
-          {
-            fps: 10,
-            qrbox: { width: 250, height: 350, }, // Match CSS width and height
-            aspectRatio: 1, // Force square aspect ratio
-          },
-          (decodedText) => onScanSuccess(decodedText),
-          (errorMessage) => onScanFailure(errorMessage)
-        );
-      } catch (error) {
-        console.error("Failed to start QR Code scanner", error);
-      }
-    };
-    
-    startScanner();
+        if (!html5QrCodeRef.current) {
+          html5QrCodeRef.current = new Html5Qrcode("qr-code-region");
+        }
 
-    return () => {
-      if (html5QrCodeRef.current && isScanning) {
-        html5QrCodeRef.current.stop().then(() => {
-          html5QrCodeRef.current.clear();
-          setIsScanning(false);
-        }).catch((error) => {
-          console.warn("Error stopping scanner:", error);
-        });
+        if (!isScannerRunning.current) {
+          await html5QrCodeRef.current.start(
+            { facingMode: "environment" }, // Use rear-facing camera
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 350 }, // Adjust scanning box
+            },
+            (decodedText) => {
+              if (decodedText !== lastScannedRef.current) {
+                lastScannedRef.current = decodedText; // Update last scanned QR code
+                onScanSuccess(decodedText);
+
+                // Allow continuous scanning by resetting the last scanned QR code after a timeout
+                setTimeout(() => {
+                  lastScannedRef.current = null;
+                }, 2000);
+              }
+            },
+            (errorMessage) => {
+              onScanFailure(errorMessage);
+            }
+          );
+
+          isScannerRunning.current = true; // Mark scanner as running
+          console.log("QR scanner started.");
+
+          // Apply zoom functionality
+          const videoTrack = html5QrCodeRef.current.getVideoElement().srcObject.getVideoTracks()[0];
+          if (videoTrack && videoTrack.getCapabilities) {
+            const capabilities = videoTrack.getCapabilities();
+            if (capabilities.zoom) {
+              // Set a zoom level (e.g., 50% of the maximum zoom)
+              await videoTrack.applyConstraints({
+                advanced: [{ zoom: capabilities.zoom.max / 2 }],
+              });
+              console.log("Zoom applied:", capabilities.zoom.max / 2);
+            } else {
+              console.warn("Zoom is not supported on this device.");
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to start QR Code scanner:", error);
       }
     };
-  }, [onScanSuccess, onScanFailure, isScanning]);
+
+    initializeScanner();
+
+    // Cleanup logic for when the component unmounts
+    return () => {
+      console.log("Keeping the camera session active on all browsers.");
+      // No cleanup performed here to keep the scanner active across all browsers
+    };
+  }, [onScanSuccess, onScanFailure]);
 
   return (
-    <div id="qr-code-region" ref={qrCodeRegionRef} style={{ position: "relative" }}>
-      <div className="scanning-line"></div>
+    <div>
+      <div id="qr-code-region" style={{ position: "relative" }}></div>
     </div>
   );
 };

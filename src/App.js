@@ -3,6 +3,8 @@ import QrScanner from "./components/QrScanner";
 
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import WavyDiv from "./components/WavyDive";
+import HeaderWavyDiv from "./components/HeaderWavyDiv";
   
 
 
@@ -11,36 +13,53 @@ const App = () => {
   const scannedSet = useRef(new Set()); // Tracks unique QR codes
   const isProcessingRef = useRef(false); // Debounce mechanism
 
-  useEffect(() => {
-    // Dynamically add the Telegram Web App SDK script
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-web-app.js";
-    script.async = true;
-    script.onload = () => {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
+  let isTelegramInitialized = false;
 
-        // Initialize the Telegram Web App
-        tg.ready();
+useEffect(() => {
+  if (isTelegramInitialized) {
+    console.log("Telegram Web App is already initialized.");
+    return;
+  }
 
-        console.log("Telegram Web App initialized:", tg.initDataUnsafe);
+  isTelegramInitialized = true;
+  console.log("Initializing Telegram Web App...");
+  
+  const script = document.createElement("script");
+  script.src = "https://telegram.org/js/telegram-web-app.js";
+  script.async = true;
 
-      } else {
-        console.warn("Telegram Web App SDK not available.");
-      }
-    };
+  script.onload = () => {
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      console.log("Telegram Web App initialized:", tg.initDataUnsafe);
+      toast.success(`Telegram Web App initialized`, {
+        position: "bottom-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "colored",
+        transition: Bounce,
+      });
+    }
+  };
 
-    script.onerror = () => {
-      console.error("Failed to load the Telegram Web App SDK.");
-    };
+  script.onerror = () => {
+    console.error("Failed to load Telegram Web App SDK.");
+  };
 
-    document.body.appendChild(script);
+  document.body.appendChild(script);
 
-    // Cleanup the script tag on component unmount
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  return () => {
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+  };
+}, []);
+
 
 
 
@@ -134,16 +153,14 @@ const App = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#008F82", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ textAlign: "center", padding: "20px" }}>
-        <h1>Boat Pass Check-in</h1>
+    
+    <div style={{ textAlign: "center", backgroundColor: "#008F82" }}>
+      <HeaderWavyDiv/>
+      <div style={{ textAlign: "center", marginTop: -100, marginBottom: 0, padding: "20px",height: "50vh", backgroundColor: "#008F82", display: "flex", flexDirection: "column"  }}>
         <QrScanner onScanSuccess={handleScanSuccess} onScanFailure={handleScanFailure} />
       </div>
-      <div style={{ backgroundColor: "#B9BCB3", padding: "20px", flexGrow: 1, overflowY: "auto" }}>
-
+      <WavyDiv/>
       <ToastContainer />
-
-      </div>
     </div>
   );
 };
