@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# QR Check-In App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based application that allows users to scan QR codes for seamless check-ins. This app is designed to streamline the check-in process for events, transportation, or any use case requiring QR code validation.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Real-Time QR Code Scanning:** Uses a live camera feed to scan QR codes.
+- **Telegram Integration:** Compatible with Telegram Mini Apps for enhanced usability.
+- **Wavy Header/Footer Design:** Visually appealing UI with animated waves.
+- **Responsive Design:** Works across devices (mobile, tablet, desktop).
+- **Zoom Feature:** Adjusts camera zoom for better QR code readability.
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend:** React
+- **QR Code Scanning:** [Html5Qrcode](https://github.com/mebjas/html5-qrcode)
+- **Deployment:** GitHub Pages / Vercel / Netlify
+- **Styling:** CSS with custom animations
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Installation
 
-### `npm test`
+1. Clone the repository:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   git clone https://github.com/javaadh/qr-checkin.git
+   cd qr-checkin
+   ```
 
-### `npm run build`
+2. Install dependencies:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Start the development server:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+4. Access the app in your browser at:
+   ```
+   http://localhost:3000
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Deployment
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Deploying to GitHub Pages
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Add the `homepage` property to your `package.json`:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```json
+   "homepage": "https://yourusername.github.io/qr-checkin"
+   ```
 
-## Learn More
+2. Install the `gh-pages` package:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```bash
+   npm install gh-pages --save-dev
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+3. Add the following scripts to your `package.json`:
 
-### Code Splitting
+   ```json
+   "scripts": {
+     "predeploy": "npm run build",
+     "deploy": "gh-pages -d build"
+   }
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+4. Deploy:
+   ```bash
+   npm run deploy
+   ```
 
-### Analyzing the Bundle Size
+### Deploying to Vercel
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. Install the Vercel CLI:
 
-### Making a Progressive Web App
+   ```bash
+   npm install -g vercel
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+2. Deploy:
+   ```bash
+   vercel
+   ```
 
-### Advanced Configuration
+### Deploying to Netlify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Install the Netlify CLI:
 
-### Deployment
+   ```bash
+   npm install -g netlify-cli
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+2. Deploy:
+   ```bash
+   netlify deploy
+   ```
 
-### `npm run build` fails to minify
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Open the app in your browser or Telegram Mini App.
+2. Allow camera permissions to enable QR scanning.
+3. Point the camera at a QR code to scan and process it.
+4. If valid, the app displays the check-in status.
+
+## File Structure
+
+```
+src/
+├── components/
+│   ├── QrScanner.js       # QR scanning logic
+│   ├── HeaderWavyDiv.js   # Animated header
+│   └── FooterWavyDiv.js   # Animated footer
+├── App.js                 # Main app entry point
+├── index.js               # React entry point
+└── styles/                # CSS files
+```
+
+## Troubleshooting
+
+- **Zoom Issues:** Ensure your device's camera supports zoom. Adjust the zoom level in `QrScanner.js`.
+- **Deployment Errors:** Check the `homepage` property in `package.json` if using GitHub Pages.
+- **Camera Permission Denied:** Verify browser permissions for camera access.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
